@@ -479,12 +479,12 @@ names(MSAIDA) &lt;- c(&quot;PARC&quot;, &quot;ARV&quot;, &quot;DAP&quot;, &quot;
 <div id="criando-matriz-de-saida-2-para-receber-os-valores-parc-modelo-erro" class="section level2">
 <h2>Criando matriz de saida 2 para receber os valores <em>PARC | MODELO
 | ERRO</em></h2>
-<pre class="r"><code>MSAIDA2 &lt;- matrix(nrow = NROW(unique(MDADOS$parcela))*NROW(MODELOS), ncol = 4, 0)</code></pre>
+<pre class="r"><code>MSAIDA2 &lt;- matrix(nrow = NROW(unique(MDADOS$parcela))*NROW(MODELOS), ncol = 3, 0)</code></pre>
 </div>
 <div id="transformando-matrix-de-saida-2-em-dataframe" class="section level2">
 <h2>Transformando matrix de saida 2 em dataframe</h2>
 <pre class="r"><code>MSAIDA2 &lt;- as.data.frame(MSAIDA2) 
-names(MSAIDA2) &lt;- c(&quot;PARC&quot;, &quot;MODELO&quot;, &quot;ERRO&quot;, &quot;R2aj&quot;)</code></pre>
+names(MSAIDA2) &lt;- c(&quot;PARC&quot;, &quot;MODELO&quot;, &quot;ERRO&quot;)</code></pre>
 </div>
 <div id="ajustando-4-modelos-para-cada-parcela-verificando-o-erro-e-selecionando-o-de-menor-erro" class="section level2">
 <h2>Ajustando 4 modelos para cada parcela, verificando o erro e
@@ -507,7 +507,6 @@ for (i in unique(MDADOS$parcela)) { # Filtrando por parcela
       MSAIDA2$PARC[nlinha] &lt;- i # Adicionando valor da parcela i a tabela de erro dos modelos
       MSAIDA2$MODELO[nlinha] &lt;- k # Adicionando numero do modelo k a tabela de erro dos modelos
       MSAIDA2$ERRO[nlinha] &lt;- ESTAT_ATUAL$sigma # Adicionando valor de erro a tabela de erro dos modelos
-      MSAIDA2$R2aj[nlinha] &lt;- ESTAT_ATUAL$adj.r.squared # Adicionando valor de R2 aj a tabela de erro dos modelos
       ERRO_ATUAL &lt;- ESTAT_ATUAL$sigma # Extraindo o valor do erro do modelo atual (k)
       
       if(ERRO_ATUAL &lt; ERRO_ANTERIOR){ # Verificando se o erro do modelo atual (k) é menor que o do anteior (k-1)
@@ -564,17 +563,17 @@ ajustados para cada parcela</h2>
 <h2>Tabela com valores de erro de cada modelo ajustado para cada parcela
 para conferência</h2>
 <pre class="r"><code>head(MSAIDA2, 10)</code></pre>
-<pre><code>##    PARC MODELO      ERRO       R2aj
-## 1     1      1 1.0269709 0.50096246
-## 2     1      2 1.0469112 0.48139507
-## 3     1      3 1.0397667 0.48844926
-## 4     1      4 1.0719356 0.45630628
-## 5     2      1 0.5585310 0.08886043
-## 6     2      2 0.5526454 0.10796171
-## 7     2      3 0.5618497 0.07800060
-## 8     2      4 0.5682350 0.05692456
-## 9     3      1 0.5235153 0.76271146
-## 10    3      2 0.5379703 0.74942676</code></pre>
+<pre><code>##    PARC MODELO      ERRO
+## 1     1      1 1.0269709
+## 2     1      2 1.0469112
+## 3     1      3 1.0397667
+## 4     1      4 1.0719356
+## 5     2      1 0.5585310
+## 6     2      2 0.5526454
+## 7     2      3 0.5618497
+## 8     2      4 0.5682350
+## 9     3      1 0.5235153
+## 10    3      2 0.5379703</code></pre>
 </div>
 <div id="modelos-ajustados-para-toda-a-base-de-dados-de-uma-vez" class="section level2">
 <h2>Modelos ajustados para toda a base de dados de uma vez</h2>

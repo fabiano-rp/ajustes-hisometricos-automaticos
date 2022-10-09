@@ -99,14 +99,14 @@ names(MSAIDA) <- c("PARC", "ARV", "DAP", "HT")
 ## Criando matriz de saida 2 para receber os valores *PARC \| MODELO \| ERRO*
 
 ```{r}
-MSAIDA2 <- matrix(nrow = NROW(unique(MDADOS$parcela))*NROW(MODELOS), ncol = 4, 0)
+MSAIDA2 <- matrix(nrow = NROW(unique(MDADOS$parcela))*NROW(MODELOS), ncol = 3, 0)
 ```
 
 ## Transformando matrix de saida 2 em dataframe
 
 ```{r}
 MSAIDA2 <- as.data.frame(MSAIDA2) 
-names(MSAIDA2) <- c("PARC", "MODELO", "ERRO", "R2aj")
+names(MSAIDA2) <- c("PARC", "MODELO", "ERRO")
 ```
 
 ## Ajustando 4 modelos para cada parcela, verificando o erro e selecionando o de menor erro
@@ -131,7 +131,6 @@ for (i in unique(MDADOS$parcela)) { # Filtrando por parcela
       MSAIDA2$PARC[nlinha] <- i # Adicionando valor da parcela i a tabela de erro dos modelos
       MSAIDA2$MODELO[nlinha] <- k # Adicionando numero do modelo k a tabela de erro dos modelos
       MSAIDA2$ERRO[nlinha] <- ESTAT_ATUAL$sigma # Adicionando valor de erro a tabela de erro dos modelos
-      MSAIDA2$R2aj[nlinha] <- ESTAT_ATUAL$adj.r.squared # Adicionando valor de R2 aj a tabela de erro dos modelos
       ERRO_ATUAL <- ESTAT_ATUAL$sigma # Extraindo o valor do erro do modelo atual (k)
       
       if(ERRO_ATUAL < ERRO_ANTERIOR){ # Verificando se o erro do modelo atual (k) é menor que o do anteior (k-1)
