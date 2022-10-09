@@ -1,0 +1,1 @@
+"# ajustes-hisometricos-automaticos" 
