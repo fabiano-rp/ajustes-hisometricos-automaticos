@@ -1,0 +1,201 @@
+---
+title: "AUTOMATIZAÇÃO DE AJUSTES HIPSOMÉTRICOS POR PARCELA"
+author: "Fabiano Rodrigues Pereira"
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{=html}
+<style>
+body {
+text-align: justify}
+</style>
+```
+ROTINA PARA AUTOMATIZAÇÃO DE AJUSTES HIPSOMÉTRICOS POR PARCELA
+
+BASE DE DADOS OBTIDA DE PLANTIOS DE *Eucalyptus urophylla*, CLONE AEC 0144
+
+Autor: Fabiano Rodrigues Pereira
+
+# CARREGANDO E EXPLORANDO OS DADOS
+
+## Carregando pacotes
+
+```{r}
+library(ggplot2)
+library(tidyr)
+```
+
+## Carregando arquivo com medições de campo
+
+```{r}
+MDADOS <- read.table('dados.txt', header = T)
+head(MDADOS, 20)
+```
+
+## Carregando arquivo com modelos:
+
+### Modelo 1:
+
+$ht_i = \beta_0 + \beta_1 dap_i + \epsilon_i$
+
+### Modelo 2:
+
+$ht_i = \beta_0 + \beta_1 \frac{1}{dap_i} + \epsilon_i$
+
+### Modelo 3:
+
+$ht_i = \beta_0 + \beta_1 dap_i^2 + \epsilon_i$
+
+### Modelo 4:
+
+$ht_i = \beta_0 + \beta_1 dap_i + \beta_2 dap_i^2 + \epsilon_i$
+
+```{r}
+MODELOS <- read.table('modelos_hip.txt', header = T)
+print(MODELOS)
+```
+
+## Dispersão gráfica do diâmetro à altura do peito (dap) vs altura das árvores em que as alturas foram medidas
+
+```{r}
+MDADOS[MDADOS$ht != 0, ] %>% ggplot(aes(dap, ht))+
+  geom_point()+
+  ylab('Altura (m)')+
+  xlab('DAP (cm)')+
+  theme_light()
+```
+
+## Transformação das variáveis para os ajustes
+
+```{r}
+
+MDADOS$invdap <- 1/(MDADOS$dap)
+MDADOS$dap2 <- (MDADOS$dap)^2
+head(MDADOS)
+
+```
+
+# PROCESSAMENTO DOS DADOS
+
+## Criando matriz de saida com apenas cabeçalho para receber os valores *PARC \| ARVORE \| DAP \| HT*
+
+```{r}
+MSAIDA <- matrix(nrow = 0, ncol = ncol(MDADOS))
+```
+
+## Transformando matrix da saida 1 em dataframe
+
+```{r}
+MSAIDA <- as.data.frame(MSAIDA) 
+names(MSAIDA) <- c("PARC", "ARV", "DAP", "HT")
+
+```
+
+## Criando matriz de saida 2 para receber os valores *PARC \| MODELO \| ERRO*
+
+```{r}
+MSAIDA2 <- matrix(nrow = NROW(unique(MDADOS$parcela))*NROW(MODELOS), ncol = 4, 0)
+```
+
+## Transformando matrix de saida 2 em dataframe
+
+```{r}
+MSAIDA2 <- as.data.frame(MSAIDA2) 
+names(MSAIDA2) <- c("PARC", "MODELO", "ERRO", "R2aj")
+```
+
+## Ajustando 4 modelos para cada parcela, verificando o erro e selecionando o de menor erro
+
+```{r}
+
+nlinha <- 0 # Definindo numero atual da linha da tabela de erros dos modelos
+
+for (i in unique(MDADOS$parcela)) { # Filtrando por parcela
+  
+  MTEMP1 <- MDADOS[MDADOS$parcela == i & MDADOS$ht != 0,] # Criando base com arvores medidas
+  MTEMP2 <- MDADOS[MDADOS$parcela == i & MDADOS$ht == 0,] # Criando base com arvores nao medidas
+  
+  if(nrow(MTEMP2) != 0){ # Verificando se ha arvores nao medidas
+    
+    ERRO_ANTERIOR <- Inf # Definindo primeiro erro com infinito (para sempre considerar o primeiro modelo) para iniciar comparações de modelo por parcela
+    
+    for (k in 1:nrow(MODELOS)) { # Ajustando modelos por parcela
+      nlinha <- nlinha + 1 # Atualizando o número de linhas da tabela de erros
+      AJUSTE_ATUAL <- lm(MODELOS$modelo[k], MTEMP1) # Realizando ajuste do modelo k da parcela i
+      ESTAT_ATUAL <- summary(AJUSTE_ATUAL) # Extraindo esttística do modelo k da parcela i
+      MSAIDA2$PARC[nlinha] <- i # Adicionando valor da parcela i a tabela de erro dos modelos
+      MSAIDA2$MODELO[nlinha] <- k # Adicionando numero do modelo k a tabela de erro dos modelos
+      MSAIDA2$ERRO[nlinha] <- ESTAT_ATUAL$sigma # Adicionando valor de erro a tabela de erro dos modelos
+      MSAIDA2$R2aj[nlinha] <- ESTAT_ATUAL$adj.r.squared # Adicionando valor de R2 aj a tabela de erro dos modelos
+      ERRO_ATUAL <- ESTAT_ATUAL$sigma # Extraindo o valor do erro do modelo atual (k)
+      
+      if(ERRO_ATUAL < ERRO_ANTERIOR){ # Verificando se o erro do modelo atual (k) é menor que o do anteior (k-1)
+        
+        MELHOR_AJUSTE <- AJUSTE_ATUAL # Se a condicao for atendida, o modelo atual e considerado o melhor ajuste
+        
+      }
+      
+      ERRO_ANTERIOR <- ERRO_ATUAL # Atualizando o valor do erro anterior (k-1) para o proximo valor de k
+      
+    }
+    
+    MTEMP2$ht <- predict(MELHOR_AJUSTE, newdata = MTEMP2) # Adicionando predicoes a tabela de arvores nao medidas
+    
+    PARCELA_AJUSTADA <- rbind(MTEMP1, MTEMP2) # Unindo tabelas de arvores de alturas medidas com estimadas
+    
+    PARCELA_AJUSTADA <- PARCELA_AJUSTADA[order(PARCELA_AJUSTADA$arvore),1:4] # Ordenando valores da parcela ajustada pelo n da arvore
+    
+    MSAIDA <- rbind(MSAIDA, PARCELA_AJUSTADA) # Adicionando parcela ajustada a tabela de saida
+  }
+  
+}
+
+```
+
+# SAIDA
+
+## Base de dados com todas alturas não medidas estimadas por modelos ajustados para cada parcela
+
+```{r}
+head(MSAIDA, 20)
+```
+
+## Tabela com valores de erro de cada modelo ajustado para cada parcela para conferência
+
+```{r}
+head(MSAIDA2, 10)
+```
+
+## Modelos ajustados para toda a base de dados de uma vez
+
+```{r}
+MODELO_GERAL <- data.frame(Modelo = 1:4, Erro = c(summary(lm(MODELOS$modelo[1],MDADOS[MDADOS$ht != 0, ]))$sigma,
+summary(lm(MODELOS$modelo[2],MDADOS[MDADOS$ht != 0, ]))$sigma,
+summary(lm(MODELOS$modelo[3],MDADOS[MDADOS$ht != 0, ]))$sigma,
+summary(lm(MODELOS$modelo[4],MDADOS[MDADOS$ht != 0, ]))$sigma))
+MODELO_GERAL
+```
+
+## Visualizando os erros de todos os modelos ajustados para cada parcela e comparando com o menor erro obtido considerando a base de dados completa (linha horizontal vermelha), é possível observar que os ajutes por parcela apresentaram em grande maioria menores erros.
+
+## Ainda, em caso de erros muito altos, pode-se verificá-los de forma mais detalhada para a validação das informações.
+
+```{r fig.width = 12, fig.height = 6}
+MSAIDA2 %>% ggplot(aes(factor(PARC), ERRO))+
+  geom_boxplot()+
+  geom_point(aes(color = factor(MODELO)))+
+  geom_hline(yintercept = min(MODELO_GERAL$Erro), color = "red")+
+  labs(x = 'Parcela', y = 'Erro padrão residual', color = "Modelo")+
+  theme_light(15)
+```
+
+
+
+
