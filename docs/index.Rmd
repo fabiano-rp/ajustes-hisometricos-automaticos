@@ -17,11 +17,9 @@ body {
 text-align: justify}
 </style>
 ```
-ROTINA PARA AUTOMATIZAÇÃO DE AJUSTES HIPSOMÉTRICOS POR PARCELA
 
 BASE DE DADOS OBTIDA DE PLANTIOS DE *Eucalyptus urophylla*, CLONE AEC 0144
 
-Autor: Fabiano Rodrigues Pereira
 
 # CARREGANDO E EXPLORANDO OS DADOS
 
