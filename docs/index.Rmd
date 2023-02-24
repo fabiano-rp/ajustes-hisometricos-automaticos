@@ -189,8 +189,13 @@ MSAIDA2 %>% ggplot(aes(factor(PARC), ERRO))+
   geom_boxplot()+
   geom_point(aes(color = factor(MODELO)))+
   geom_hline(yintercept = min(MODELO_GERAL$Erro), color = "red")+
-  labs(x = 'Parcela', y = 'Erro padrão residual', color = "Modelo")+
-  theme_light(15)
+  labs(title = "Ajuste de modelos por parcela",x = 'Parcela', y = 'Erro padrão residual', color = "Modelo")+
+  theme_light(15)+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
+                       plot.title = element_text(hjust=0.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  annotate('text', x=25, y=2.6, label = "Modelo médio", color = "red")
+
 ```
 
 
