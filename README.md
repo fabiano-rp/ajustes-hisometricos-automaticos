@@ -44,7 +44,7 @@ Ferramentas e tecnologias:
 *Maioria dos ajustes selecionados a nível de parcela apresentaram menor erro do que o ajuste feito para toda a base de dados*
 
 <div align="center" style="display: inline_block">
-  <img height="500" width="880" alt="ajustes_plot" src="docs/ajustes_plot.jpeg">  
+  <img height="558" width="1383" alt="ajustes_plot" src="docs/ajustes_plot.jpeg">  
 </div>
 
 
