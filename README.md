@@ -32,10 +32,10 @@ library(tidyr)
 ```
 Ferramentas e tecnologias:
 <div align="center">
-<img width="45" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/RStudio.png" />
-<img width="45" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/ggplot2.png" />
-<img width="45" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/tidyr.png" />
-<img width="45" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/rmarkdown.png" />
+<img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/RStudio.png" />
+<img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/ggplot2.png" />
+<img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/tidyr.png" />
+<img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/rmarkdown.png" />
 </div>
 
 ### Conclusão
