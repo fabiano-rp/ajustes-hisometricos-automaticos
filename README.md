@@ -28,7 +28,6 @@ Utilizou-se os seguintes pacotes:
 ```
 library(ggplot2)
 library(tidyr)
-
 ```
 Ferramentas e tecnologias:
 <div align="center">
@@ -47,6 +46,8 @@ Ferramentas e tecnologias:
   <img height="558" width="1383" alt="ajustes_plot" src="docs/ajustes_plot.jpeg">  
 </div>
 
+<br>
+<br>
 
 **Essa automatização de ajuste de equações pode ser expandida?**
 
