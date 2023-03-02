@@ -37,7 +37,7 @@ library(tidyr)
 <img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/rmarkdown.png" />
 </div>
 
-### Conclusão
+## Conclusão
 **O ajuste por parcela promoveu ganhos de precisão?** 
 
 *Maioria dos ajustes selecionados a nível de parcela apresentaram menor erro do que o ajuste feito para toda a base de dados*
