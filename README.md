@@ -23,13 +23,13 @@ Diâmetro da árvore à altura de 1,3 m acima do solo. Esta medida é dada em cm
 Ht:
 Altura da árvore em metros.
 
-#### Informações Técnicas
+## Informações Técnicas
 Utilizou-se os seguintes pacotes:
 ```
 library(ggplot2)
 library(tidyr)
 ```
-Ferramentas e tecnologias:
+## Ferramentas e tecnologias:
 <div align="center">
 <img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/RStudio.png" />
 <img width="60" src="https://github.com/rstudio/hex-stickers/blob/main/PNG/ggplot2.png" />
